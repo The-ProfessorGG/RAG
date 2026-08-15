@@ -87,6 +87,14 @@ Question
   → generation
 ```
 
+### Animated example
+
+In this example, an employee asks, “Can I carry unused leave into next year?” The system rewrites the vague question into a more searchable query, combines keyword and vector results, reranks the candidates, compresses the strongest evidence, and generates a cited answer.
+
+![Animated Advanced RAG example showing a leave question moving through query rewriting, hybrid search, reranking, context compression, and answer generation](rag-images/advanced-rag-example.gif)
+
+*Figure 5. Advanced RAG improves the evidence before generation: the carry-over policy moves from fourth place to first, and the relevant rule is isolated before the answer is written.*
+
 A representative advanced pipeline adds query rewriting before retrieval and reranking afterward; one comparative study explicitly evaluated those two enhancements against a naive baseline. [^3]
 
 ### Why it helps
@@ -108,6 +116,14 @@ The improvements increase latency, engineering complexity, and operating cost. A
 Question → router ──┼─ vector search ───┼→ rerank → compress → generate
                     └─ database tool ──┘
 ```
+
+### Animated example
+
+In this example, one employee question contains two different needs: a personal leave balance and a general carry-over rule. A router sends each need to the appropriate module, then combines the database result and policy evidence into one answer.
+
+![Animated Modular RAG example showing one question split and routed to an HR database and policy index before the evidence is combined](rag-images/modular-rag-example.gif)
+
+*Figure 6. Modular RAG routes different information needs to specialized sources and recombines their evidence.*
 
 The defining idea is architectural flexibility. A modular system might route a policy question to a curated document index, a numerical question to a database, and a multi-hop question to a graph retriever.
 
@@ -137,6 +153,14 @@ Question → retrieve → evaluate retrieval quality
                          ├─ good → use evidence → generate
                          └─ poor → rewrite, broaden, filter, or retrieve elsewhere
 ```
+
+### Animated example
+
+In this example, the first search for battery warranty coverage returns setup and charging material instead of a warranty rule. The quality check fails, so the system rewrites and filters the search before answering from stronger evidence.
+
+![Animated Corrective RAG example showing an irrelevant first retrieval failing a quality check and triggering a corrected search](rag-images/corrective-rag-example.gif)
+
+*Figure 7. Corrective RAG treats weak retrieval as a recoverable failure rather than silently passing irrelevant passages to the model.*
 
 Correction can involve rewriting the question, searching a second index, expanding the retrieval scope, removing irrelevant passages, or declining to answer when adequate evidence cannot be found.
 
@@ -174,6 +198,14 @@ Question → decide whether retrieval is needed
        revise, cite, or abstain
 ```
 
+### Animated example
+
+In this example, the model decides that a store-policy question requires retrieval. Its first draft applies the general 30-day return rule, but self-critique detects a conflict with the clearance-specific passage and revises the answer.
+
+![Animated Self-RAG example showing selective retrieval, an incorrect draft, self-critique, and a revised evidence-grounded answer](rag-images/self-rag-example.gif)
+
+*Figure 8. Self-RAG uses reflection to detect that a draft conflicts with retrieved evidence and then revises the response.*
+
 ### What it is designed to address
 
 A fixed retrieval policy can hurt performance in two opposite ways: it may retrieve unnecessary context for simple questions, or fail to retrieve enough evidence for difficult ones. Self-reflection attempts to make retrieval and answer construction more conditional.
@@ -203,6 +235,14 @@ Question → first retrieval → partial reasoning
                          ↓
                     final answer
 ```
+
+### Animated example
+
+In this example, the first retrieval identifies a port closure but cannot identify the affected suppliers. The system recognizes the missing relationship, performs a second targeted retrieval, and combines both rounds of evidence.
+
+![Animated Adaptive RAG example showing a port-closure question requiring a second retrieval to identify exposed suppliers](rag-images/adaptive-rag-example.gif)
+
+*Figure 9. Adaptive RAG changes its retrieval behavior after discovering that the first evidence set cannot complete the answer.*
 
 This is useful for questions that require several pieces of evidence, such as comparing products, following a causal chain, or answering a multi-hop question. Survey work identifies adaptive retrieval, real-time retrieval, and structured reasoning over multi-hop evidence as important directions. [^1]
 
@@ -239,6 +279,14 @@ User task → planner
              synthesize
 ```
 
+### Animated example
+
+In this example, an agent plans a vendor comparison, chooses database, document-search, and calculation tools, executes the plan, and then updates it when verification shows that the initially stronger vendor exceeds the budget.
+
+![Animated Agentic RAG example showing task planning, tool selection, execution, verification, plan updating, and recommendation](rag-images/agentic-rag-example.gif)
+
+*Figure 10. Agentic RAG orchestrates several retrieval and reasoning operations, including changing the plan after inspecting intermediate results.*
+
 ### How it differs from adaptive RAG
 
 The boundary is not absolute. Adaptive RAG emphasizes changing retrieval behavior; agentic RAG emphasizes **autonomous orchestration and tool selection**. An agentic system may therefore use adaptive retrieval, corrective evaluation, graph search, databases, web search, and calculators in the same workflow.
@@ -270,6 +318,14 @@ Question → entity and relation detection
           → evidence organization
           → generation
 ```
+
+### Animated example
+
+In this example, the system detects supplier Acme as an entity, traverses the graph through Component C7, collects the paths to Products Alpha and Beta, and organizes those relationships as answer evidence.
+
+![Animated GraphRAG example showing entity detection and graph traversal from a supplier through a shared component to affected products](rag-images/graphrag-example.gif)
+
+*Figure 11. GraphRAG answers a relationship question by following and citing multi-hop graph paths.*
 
 A GraphRAG framework may explicitly separate the query processor, retriever, organizer, generator, and graph data source. [^4]
 
