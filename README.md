@@ -2,7 +2,25 @@
 
 ## What is RAG?
 
-Retrieval-Augmented Generation, usually abbreviated **RAG**, is a way to make a language model answer using information retrieved from an external knowledge source at inference time. Instead of relying only on the model’s parametric memory, a RAG system finds relevant material—such as documents, database records, web pages, manuals, or graph facts—and supplies that material to the model as context. [^1]
+Retrieval-Augmented Generation, usually abbreviated **RAG**, is a way to make a language model answer using information retrieved from an external knowledge source at inference time. Instead of relying only on the model’s parametric memory, a RAG system finds relevant material – such as documents, database records, web pages, manuals, or graph facts – and supplies that material to the model as context. [^1]
+
+## Why do we have RAG?
+
+We have RAG because a language model’s built-in knowledge is useful but limited in several practical ways:
+
+1. **Its knowledge can be stale.** RAG lets the system retrieve current documents, policies, product information, or database records at answer time rather than relying only on information learned during training. [^1]
+
+2. **It can hallucinate.** Language models generate plausible text, not guaranteed facts. Supplying relevant evidence gives the model material to ground its answer and can reduce unsupported claims. [^2][^3]
+
+3. **It needs access to private or specialized knowledge.** A general model usually does not know an organization’s internal manuals, contracts, research documents, tickets, or current databases. RAG can connect it to those sources without retraining the model.
+
+4. **Updating a knowledge base is easier than retraining a model.** New documents can be indexed, replaced, or removed while the underlying language model remains unchanged.
+
+5. **It can improve traceability.** A system can show which passages or records supported an answer, making the output easier to review than a response based only on opaque model memory.
+
+6. **It separates two jobs.** Retrieval finds relevant information; generation turns that information into a natural-language response. This separation makes it possible to improve search, reranking, filtering, or source selection independently of the language model. Surveys describe RAG as a combination of information retrieval and language generation designed to address the static limitations of model knowledge. [^2]
+
+RAG is not a guarantee of truth. If retrieval returns irrelevant, incomplete, or outdated evidence, the model may still produce a poor answer. So the real purpose of RAG is to make answers **more current, domain-aware, evidence-grounded, and inspectable** – provided that the retrieval and evaluation layers are designed well.
 
 A basic RAG request looks like this:
 
@@ -24,20 +42,20 @@ The purpose is not simply to “add search.” RAG separates **knowledge access*
 
 A typical production RAG pipeline contains several stages:
 
-1. **Ingestion** — collect documents and convert them into a searchable representation.
-2. **Chunking and indexing** — split documents into passages and index them, often with dense embeddings, keyword indexes, or both.
-3. **Query processing** — interpret, rewrite, expand, or decompose the user’s question.
-4. **Retrieval** — select candidate passages or records.
-5. **Reranking and filtering** — order candidates by relevance and remove weak evidence.
-6. **Context construction** — fit the best evidence into the model’s context window.
-7. **Generation** — ask the language model to answer using the supplied context.
-8. **Evaluation and feedback** — measure retrieval quality, answer faithfulness, completeness, latency, and cost.
+1. **Ingestion** – collect documents and convert them into a searchable representation.
+2. **Chunking and indexing** – split documents into passages and index them, often with dense embeddings, keyword indexes, or both.
+3. **Query processing** – interpret, rewrite, expand, or decompose the user’s question.
+4. **Retrieval** – select candidate passages or records.
+5. **Reranking and filtering** – order candidates by relevance and remove weak evidence.
+6. **Context construction** – fit the best evidence into the model’s context window.
+7. **Generation** – ask the language model to answer using the supplied context.
+8. **Evaluation and feedback** – measure retrieval quality, answer faithfulness, completeness, latency, and cost.
 
 ![Two-phase RAG architecture showing knowledge preparation and question answering](rag-images/rag-two-phase-architecture.png)
 
 *Figure 2. Documents are prepared and indexed ahead of time; each question retrieves evidence from that shared index before the language model answers.*
 
-The literature does not use one universally accepted taxonomy. Some surveys classify RAG by pipeline stage—pre-retrieval, retrieval, post-retrieval, and generation—while others classify it by architecture, robustness, or knowledge representation. [^2] The eight types below are therefore best understood as **overlapping design patterns**, not eight mutually exclusive boxes.
+The literature does not use one universally accepted taxonomy. Some surveys classify RAG by pipeline stage – pre-retrieval, retrieval, post-retrieval, and generation – while others classify it by architecture, robustness, or knowledge representation. [^2] The eight types below are therefore best understood as **overlapping design patterns**, not eight mutually exclusive boxes.
 
 ## 1. Naive RAG
 
@@ -180,7 +198,7 @@ Advanced RAG improves retrieval as a general pipeline. Corrective RAG makes **re
 - Repeated searches increase latency and cost.
 - Aggressive correction can lead to unnecessary searching or answer refusal.
 
-CRAG is especially useful when incorrect evidence is more damaging than a slower answer—for example, regulated enterprise workflows, technical support, or high-stakes knowledge retrieval.
+CRAG is especially useful when incorrect evidence is more damaging than a slower answer – for example, regulated enterprise workflows, technical support, or high-stakes knowledge retrieval.
 
 ## 5. Self-Reflective RAG / Self-RAG
 
@@ -308,7 +326,7 @@ Use agentic RAG when the task genuinely requires multiple operations. For simple
 
 ## 8. GraphRAG
 
-**GraphRAG** uses graph-structured knowledge—entities as nodes and relationships as edges—to retrieve and organize evidence. The graph may be constructed from documents, databases, ontologies, or a combination of sources. Graph structure is particularly useful when the answer depends on relationships rather than isolated passages. [^4]
+**GraphRAG** uses graph-structured knowledge – entities as nodes and relationships as edges – to retrieve and organize evidence. The graph may be constructed from documents, databases, ontologies, or a combination of sources. Graph structure is particularly useful when the answer depends on relationships rather than isolated passages. [^4]
 
 ### Typical architecture
 
@@ -379,7 +397,7 @@ That description is more informative than forcing the system into one category.
 - Choose **Advanced RAG** when the baseline retrieves relevant material inconsistently.
 - Choose **Modular RAG** when you have multiple data sources, query types, or interchangeable components.
 - Choose **Corrective RAG** when bad retrieval is a major failure mode and recovery is worth the additional latency.
-- Choose **Self-RAG** when retrieval should be selective and the system can benefit from explicit critique—but validate self-critique externally.
+- Choose **Self-RAG** when retrieval should be selective and the system can benefit from explicit critique – but validate self-critique externally.
 - Choose **Adaptive/Iterative RAG** for multi-hop or evolving information needs.
 - Choose **Agentic RAG** for multi-step research and tool use, not merely because the application uses an LLM.
 - Choose **GraphRAG** when entities, relationships, and multi-hop connections are central to the questions.
