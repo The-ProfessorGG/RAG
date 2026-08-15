@@ -1,0 +1,6 @@
+__pycache__/
+*.py[cod]
+.env
+.git/
+.ipynb_checkpoints/
+tests/

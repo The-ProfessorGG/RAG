@@ -1,0 +1,12 @@
+FROM python:3.12-slim
+
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PORT=8000 \
+    RAG_GENERATOR=local
+
+WORKDIR /app
+COPY . .
+
+EXPOSE 8000
+CMD ["python", "server.py"]
