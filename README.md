@@ -1,5 +1,7 @@
 ﻿# A Practical Guide to Retrieval-Augmented Generation (RAG)
 
+ ### THIS IS STILL A WORK IN PROGRESS AND HAS NOT BEEN COMPLETELY FACT-CHECKED 
+
 ## What is RAG?
 
 Retrieval-Augmented Generation, usually abbreviated **RAG**, is a way to make a language model answer using information retrieved from an external knowledge source at inference time. Instead of relying only on the model’s parametric memory, a RAG system finds relevant material – such as documents, database records, web pages, manuals, or graph facts – and supplies that material to the model as context. [^1]
